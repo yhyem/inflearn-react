@@ -22,7 +22,9 @@ const Main = () => {
             value={searchKeyword}
             onChange={handleChangeInput}
           />
-          <button type="reset" class="btn-reset"></button>
+          {searchKeyword.length > 0 ? (
+            <button type="reset" class="btn-reset"></button>
+          ) : null}
         </form>
       </div>
     </>
