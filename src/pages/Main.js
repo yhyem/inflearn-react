@@ -1,8 +1,20 @@
 import React, { useState } from "react";
 import "./style.css";
+import store from "../assets/Store.js";
 
 const Main = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    search(searchKeyword);
+  };
+
+  const search = (searchKeyword) => {
+    const result = store.search(searchKeyword);
+    setSearchResult(result);
+  };
 
   const handleChangeInput = (event) => {
     if (event.target.value.length <= 0) {
@@ -13,8 +25,8 @@ const Main = () => {
   };
 
   const handleReset = () => {
-    console.log("Todo: handleReset", searchKeyword);
     setSearchKeyword("");
+    console.log("Todo: handleReset", searchKeyword);
   };
 
   return (
@@ -25,7 +37,7 @@ const Main = () => {
       <div className="container">
         <form
           id="search-form-view"
-          onSubmit={(event) => handleChangeInput(event)}
+          onSubmit={(event) => handleSubmit(event)}
           onReset={handleReset}
         >
           <input
@@ -33,12 +45,26 @@ const Main = () => {
             placeholder="검색어를 입력하세요"
             autoFocus
             value={searchKeyword}
-            onChange={handleChangeInput}
+            onChange={(event) => handleChangeInput(event)}
           />
           {searchKeyword.length > 0 ? (
             <button type="reset" className="btn-reset"></button>
           ) : null}
         </form>
+        <div className="content">
+          {searchResult.length > 0 ? (
+            <ul className="result">
+              {searchResult.map((item) => (
+                <li key={item.id}>
+                  <img src={item.imageUrl} alt={item.name} />
+                  <p>{item.name}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="empty-box">검색 결과가 없습니다.</div>
+          )}
+        </div>
       </div>
     </>
   );
