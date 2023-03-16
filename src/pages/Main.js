@@ -2,9 +2,21 @@ import React, { useState } from "react";
 import "./style.css";
 import store from "../assets/Store.js";
 
+const TabType = {
+  KEYWORD: "KEYWORD",
+  HISTORY: "HISTORY",
+};
+
+const TabLabel = {
+  [TabType.KEYWORD]: "추천 검색어",
+  [TabType.HISTORY]: "최근 검색어",
+};
+
 const Main = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResult, setSearchResult] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
+  const [selectedTab, setSelectedTab] = useState(TabType.KEYWORD);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -14,20 +26,56 @@ const Main = () => {
   const search = (searchKeyword) => {
     const result = store.search(searchKeyword);
     setSearchResult(result);
+    setSubmitted(true);
   };
 
   const handleChangeInput = (event) => {
-    if (event.target.value.length <= 0) {
+    const keyword = event.target.value;
+
+    if (keyword.length <= 0 && submitted) {
       return handleReset();
     }
-    setSearchKeyword(event.target.value);
+    setSearchKeyword(keyword);
     console.log(searchKeyword);
   };
 
   const handleReset = () => {
     setSearchKeyword("");
-    console.log("Todo: handleReset", searchKeyword);
+    setSearchResult([]);
+    setSubmitted(false);
   };
+
+  const searchView =
+    searchResult.length > 0 ? (
+      <ul className="result">
+        {searchResult.map((item) => (
+          <li key={item.id}>
+            <img src={item.imageUrl} alt={item.name} />
+            <p>{item.name}</p>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <div className="empty-box">검색 결과가 없습니다.</div>
+    );
+
+  const tabView = (
+    <>
+      <ul className="tabs">
+        {Object.values(TabType).map((tabType) => (
+          <li
+            key={tabType}
+            className={selectedTab === tabType ? "active" : ""}
+            onClick={() => setSelectedTab(tabType)}
+          >
+            {TabLabel[tabType]}
+          </li>
+        ))}
+      </ul>
+      {selectedTab === TabType.KEYWORD && <>{`TODO: 추천 검색어`}</>}
+      {selectedTab === TabType.HISTORY && <>{`TODO: 최근 검색어`}</>}
+    </>
+  );
 
   return (
     <>
@@ -51,20 +99,7 @@ const Main = () => {
             <button type="reset" className="btn-reset"></button>
           ) : null}
         </form>
-        <div className="content">
-          {searchResult.length > 0 ? (
-            <ul className="result">
-              {searchResult.map((item) => (
-                <li key={item.id}>
-                  <img src={item.imageUrl} alt={item.name} />
-                  <p>{item.name}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="empty-box">검색 결과가 없습니다.</div>
-          )}
-        </div>
+        <div className="content">{submitted ? searchView : tabView}</div>
       </div>
     </>
   );
