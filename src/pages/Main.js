@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.css";
 import store from "../assets/Store.js";
 
@@ -17,6 +17,12 @@ const Main = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [selectedTab, setSelectedTab] = useState(TabType.KEYWORD);
+  const [keywordList, setKeywordList] = useState([]);
+
+  useEffect(() => {
+    const keyword = store.getKeywordList();
+    setKeywordList(keyword);
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -59,6 +65,18 @@ const Main = () => {
       <div className="empty-box">검색 결과가 없습니다.</div>
     );
 
+  const keywordListView = (
+    <ul className="list">
+      {keywordList.map(({ id, keyword }, index) => (
+        // TODO
+        <li key={id}>
+          <span className="number">{index + 1}</span>
+          <span>{keyword}</span>
+        </li>
+      ))}
+    </ul>
+  );
+
   const tabView = (
     <>
       <ul className="tabs">
@@ -72,7 +90,7 @@ const Main = () => {
           </li>
         ))}
       </ul>
-      {selectedTab === TabType.KEYWORD && <>{`TODO: 추천 검색어`}</>}
+      {selectedTab === TabType.KEYWORD && keywordListView}
       {selectedTab === TabType.HISTORY && <>{`TODO: 최근 검색어`}</>}
     </>
   );
