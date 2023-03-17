@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { formatRelativeDate } from "../assets/helpers.js";
 import "./style.css";
 import store from "../assets/Store.js";
 
@@ -18,10 +19,13 @@ const Main = () => {
   const [submitted, setSubmitted] = useState(false);
   const [selectedTab, setSelectedTab] = useState(TabType.KEYWORD);
   const [keywordList, setKeywordList] = useState([]);
+  const [historyList, setHistoryList] = useState([]);
 
   useEffect(() => {
     const keyword = store.getKeywordList();
+    const history = store.getHistoryList();
     setKeywordList(keyword);
+    setHistoryList(history);
   }, []);
 
   const handleSubmit = (event) => {
@@ -31,6 +35,7 @@ const Main = () => {
 
   const search = (searchKeyword) => {
     const result = store.search(searchKeyword);
+    setSearchKeyword(searchKeyword);
     setSearchResult(result);
     setSubmitted(true);
   };
@@ -43,6 +48,14 @@ const Main = () => {
     }
     setSearchKeyword(keyword);
     console.log(searchKeyword);
+  };
+
+  const handleClickRemoveHistory = (event, keyword) => {
+    event.stopPropagation();
+
+    store.removeHistory(keyword);
+    const history = store.getHistoryList();
+    setHistoryList(history);
   };
 
   const handleReset = () => {
@@ -68,10 +81,24 @@ const Main = () => {
   const keywordListView = (
     <ul className="list">
       {keywordList.map(({ id, keyword }, index) => (
-        // TODO
-        <li key={id}>
+        <li key={id} onClick={() => search(keyword)}>
           <span className="number">{index + 1}</span>
           <span>{keyword}</span>
+        </li>
+      ))}
+    </ul>
+  );
+
+  const historyListView = (
+    <ul className="list">
+      {historyList.map(({ id, keyword, date }) => (
+        <li key={id} onClick={() => search(keyword)}>
+          <span>{keyword}</span>
+          <span className="date">{formatRelativeDate(date)}</span>
+          <button
+            className="btn-remove"
+            onClick={(event) => handleClickRemoveHistory(event, keyword)}
+          />
         </li>
       ))}
     </ul>
@@ -91,7 +118,7 @@ const Main = () => {
         ))}
       </ul>
       {selectedTab === TabType.KEYWORD && keywordListView}
-      {selectedTab === TabType.HISTORY && <>{`TODO: 최근 검색어`}</>}
+      {selectedTab === TabType.HISTORY && historyListView}
     </>
   );
 
