@@ -35,8 +35,11 @@ const Main = () => {
 
   const search = (searchKeyword) => {
     const result = store.search(searchKeyword);
+    const history = store.getHistoryList();
+
     setSearchKeyword(searchKeyword);
     setSearchResult(result);
+    setHistoryList(history);
     setSubmitted(true);
   };
 
