@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { formatRelativeDate } from "../assets/helpers.js";
 import "./style.css";
 import store from "../assets/Store.js";
+import Header from "../components/Header.js";
 
 const TabType = {
   KEYWORD: "KEYWORD",
@@ -127,9 +128,7 @@ const Main = () => {
 
   return (
     <>
-      <header>
-        <h2 className="container">검색</h2>
-      </header>
+      <Header title="검색" />
       <div className="container">
         <form
           id="search-form-view"
