@@ -3,6 +3,7 @@ import { formatRelativeDate } from "../assets/helpers.js";
 import "./style.css";
 import store from "../assets/Store.js";
 import Header from "../components/Header.js";
+import SearchForm from "../components/SearchForm.js";
 
 const TabType = {
   KEYWORD: "KEYWORD",
@@ -29,11 +30,6 @@ const Main = () => {
     setHistoryList(history);
   }, []);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    search(searchKeyword);
-  };
-
   const search = (searchKeyword) => {
     const result = store.search(searchKeyword);
     const history = store.getHistoryList();
@@ -44,11 +40,9 @@ const Main = () => {
     setSubmitted(true);
   };
 
-  const handleChangeInput = (event) => {
-    const keyword = event.target.value;
-
-    if (keyword.length <= 0 && submitted) {
-      return handleReset();
+  const handleChangeInput = (keyword) => {
+    if (keyword.length <= 0) {
+      handleReset();
     }
     setSearchKeyword(keyword);
     console.log(searchKeyword);
@@ -130,22 +124,14 @@ const Main = () => {
     <>
       <Header title="검색" />
       <div className="container">
-        <form
-          id="search-form-view"
-          onSubmit={(event) => handleSubmit(event)}
-          onReset={handleReset}
-        >
-          <input
-            type="text"
-            placeholder="검색어를 입력하세요"
-            autoFocus
-            value={searchKeyword}
-            onChange={(event) => handleChangeInput(event)}
-          />
-          {searchKeyword.length > 0 ? (
-            <button type="reset" className="btn-reset"></button>
-          ) : null}
-        </form>
+        <SearchForm
+          value={searchKeyword}
+          onChange={(value) => handleChangeInput(value)}
+          onSubmit={() => search(searchKeyword)}
+          onReset={() => handleReset()}
+        />
+      </div>
+      <div className="container">
         <div className="content">{submitted ? searchView : tabView}</div>
       </div>
     </>
