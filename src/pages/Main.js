@@ -59,7 +59,7 @@ const Main = () => {
                 <KeywordList onClick={(keyword) => search(keyword)} />
               )}
               {selectedTab === TabType.HISTORY && (
-                <HistoryList onClick={(keyword) => this.search(keyword)} />
+                <HistoryList onClick={(keyword) => search(keyword)} />
               )}
             </>
           )}
