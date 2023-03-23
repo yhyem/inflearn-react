@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./style.css";
+import "../styles/style.css";
 import store from "../assets/Store.js";
 import Header from "../components/Header.js";
 import SearchForm from "../components/SearchForm.js";
